@@ -253,7 +253,7 @@ app.get('/api/qris/status', async (req, res) => {
 // Batalkan transaksi
 app.get('/api/trx/cancel', async (req, res) => {
     try {
-        const { token, transaction_id } = req.query;
+        const { token, trx_id } = req.query;
 
         if (!token) {
             return res.status(400).json({
@@ -262,7 +262,7 @@ app.get('/api/trx/cancel', async (req, res) => {
             });
         }
 
-        const data = await sdk.cancelTransaction(token, transaction_id);
+        const data = await sdk.cancelTransaction(token, trx_id);
 
         const aspi = data?.metadata?.provider_metadata?.aspi;
 
@@ -301,7 +301,7 @@ app.get('/api/trx/cancel', async (req, res) => {
 // Detail transaksi
 app.get('/api/trx/detail', async (req, res) => {
     try {
-        const { token, transaction_id } = req.query;
+        const { token, trx_id } = req.query;
 
         if (!token) {
             return res.status(400).json({
@@ -310,7 +310,7 @@ app.get('/api/trx/detail', async (req, res) => {
             });
         }
 
-        const data = await sdk.getTransactionDetail(token, transaction_id);
+        const data = await sdk.getTransactionDetail(token, trx_id);
 
         const aspi = data?.metadata?.provider_metadata?.aspi;
 
