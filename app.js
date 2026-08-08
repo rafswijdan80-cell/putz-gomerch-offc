@@ -27,7 +27,7 @@ async function toUrl(buffer) {
     contentType: "image/png"
   });
 
-  const res = await fetch("https://app.putzofficial.biz.id/api.php", {
+  const res = await fetch("http://localhost:6700/api.php", {
     method: "POST",
     body: form,
     headers: form.getHeaders()
