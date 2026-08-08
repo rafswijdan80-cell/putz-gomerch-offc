@@ -22,15 +22,12 @@ async function toUrl(buffer) {
 
   const form = new FormData();
 
-  form.append("img", buffer, {
+  form.append("file", buffer, {
     filename: "putz.png",
     contentType: "image/png"
   });
 
-  form.append("content_type", "0");
-  form.append("max_th_size", "420");
-
-  const res = await fetch("https://api.pixhost.cc/images", {
+  const res = await fetch("https://app.putzofficial.biz.id/api.php", {
     method: "POST",
     body: form,
     headers: form.getHeaders()
@@ -38,20 +35,22 @@ async function toUrl(buffer) {
 
   const json = await res.json();
 
-  if (!res.ok) {
-    throw new Error(json.error || "Upload Pixhost gagal");
+  if (!res.ok || !json.success) {
+    throw new Error(
+      json.message ||
+      json.error ||
+      "Upload PutzUpload gagal"
+    );
   }
 
-  const html = await (await fetch(json.show_url)).text();
+  const imageUrl = json.file?.url;
 
-const match = html.match(/https:\/\/img\d+\.pixhost\.(?:to|cc)\/images\/[^"' ]+/);
+  if (!imageUrl) {
+    throw new Error("Direct image URL tidak ditemukan");
+  }
 
-if (!match) {
-  throw new Error("Direct image URL tidak ditemukan");
-}
-
-return match[0];
-}
+  return imageUrl;
+    }
 
 // ================= ROUTE HALAMAN =================
 app.get('/', (req, res) => {
