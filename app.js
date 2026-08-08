@@ -27,7 +27,7 @@ async function toUrl(buffer) {
     contentType: "image/png"
   });
 
-  const res = await fetch("http://localhost:6700/api.php", {
+  const res = await fetch("http://127.0.0.1:6700/api.php", {
     method: "POST",
     body: form,
     headers: form.getHeaders()
