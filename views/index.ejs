@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PutzGomerch Api</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.383.0/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700;800&family=VT323&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── HYPRLUV tokens ── */
+        :root {
+            --ink:    #0B0B0B;
+            --ink2:   #161616;
+            --lime:   #D0F53A;
+            --orange: #FF5826;
+            --pink:   #FF3D7F;
+            --bone:   #F3EFE3;
+            --white:  #FFFFFF;
+
+            --font-d:  "Anton","Arial Narrow",sans-serif;
+            --font-b:  "Space Grotesk",system-ui,sans-serif;
+            --font-px: "VT323",ui-monospace,monospace;
+            --font-mono:"JetBrains Mono",monospace;
+
+            --pop:  cubic-bezier(0.16,1,0.3,1);
+            --snap: cubic-bezier(0.34,1.56,0.64,1);
+
+            /* keep EJS variable names so Tailwind inline styles still resolve */
+            --accent-cyan:    var(--lime);
+            --accent-purple:  var(--orange);
+            --accent-pink:    var(--pink);
+            --accent-amber:   #FEBC2E;
+            --accent-emerald: var(--lime);
+            --accent-blue:    #60a5fa;
+            --terminal-bg:    #050A0F;
+            --terminal-text:  var(--lime);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-b);
+            background: var(--ink);
+            color: var(--white);
+            min-height: 100vh;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            /* halftone */
+            background-image: radial-gradient(rgba(208,245,58,.04) 1px, transparent 1.4px);
+            background-size: 26px 26px;
+            background-attachment: fixed;
+        }
+
+        ::selection { background: var(--lime); color: var(--ink); }
+
+        /* ── override Tailwind color utilities ── */
+        .text-violet-600  { color: var(--lime)   !important; }
+        .text-fuchsia-500 { color: var(--orange) !important; }
+        .text-slate-600   { color: rgba(255,255,255,.65) !important; }
+        .text-slate-500   { color: rgba(255,255,255,.5)  !important; }
+        .text-slate-700   { color: rgba(255,255,255,.7)  !important; }
+        .text-black       { color: var(--ink)    !important; }
+        .bg-emerald-300   { background: var(--lime)   !important; }
+        .bg-cyan-300      { background: var(--orange) !important; }
+        .text-emerald-900 { color: var(--ink) !important; }
+        .text-amber-500   { color: var(--lime) !important; }
+        .text-emerald-600 { color: var(--lime) !important; }
+        .animate-ping     { background: var(--lime) !important; }
+
+        /* ── APP HEADER ── */
+        .app-header {
+            background: var(--ink) !important;
+            border-bottom: 3px solid var(--lime) !important;
+        }
+        .app-header .display-font {
+            font-family: var(--font-d) !important;
+            font-size: clamp(18px,2.2vw,26px) !important;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            color: var(--white) !important;
+        }
+        .logo-box {
+            background: var(--lime) !important;
+            border: 3px solid var(--ink) !important;
+            border-radius: 8px !important;
+            box-shadow: 4px 4px 0 var(--orange) !important;
+        }
+        .status-box {
+            background: var(--ink) !important;
+            border: 3px solid var(--lime) !important;
+            border-radius: 6px !important;
+            box-shadow: 3px 3px 0 var(--lime) !important;
+        }
+        .status-box .ping-dot {
+            background: var(--lime) !important;
+            border-color: var(--ink) !important;
+        }
+        /* live server badge in nav */
+        .app-header .hidden.sm\:flex {
+            background: var(--lime) !important;
+            border-color: var(--ink) !important;
+            border-radius: 4px !important;
+            box-shadow: 3px 3px 0 var(--orange) !important;
+        }
+        .app-header .hidden.sm\:flex span.text-\[0\.7rem\] {
+            font-family: var(--font-px) !important;
+            font-size: 18px !important;
+            letter-spacing: 2px;
+        }
+
+        /* ── CARDS ── */
+        .premium-card {
+            background: var(--ink2) !important;
+            border: 3px solid var(--lime) !important;
+            border-radius: 8px !important;
+            box-shadow: 6px 6px 0 var(--lime) !important;
+        }
+        .premium-card:hover {
+            transform: translate(-3px,-3px) !important;
+            box-shadow: 9px 9px 0 var(--lime) !important;
+        }
+
+        /* hero card */
+        .premium-card:first-child {
+            border-color: var(--orange) !important;
+            box-shadow: 6px 6px 0 var(--orange) !important;
+        }
+        .premium-card:first-child h1 {
+            font-family: var(--font-d) !important;
+            font-size: clamp(28px,4.5vw,56px) !important;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--lime) !important;
+        }
+        .premium-card:first-child p { color: rgba(255,255,255,.65) !important; }
+
+        .dashed-divider { border-top-color: rgba(208,245,58,.25) !important; }
+
+        /* status pill */
+        .status-pill {
+            background: var(--lime) !important;
+            color: var(--ink) !important;
+            border: 3px solid var(--ink) !important;
+            border-radius: 4px !important;
+            box-shadow: 4px 4px 0 var(--orange) !important;
+            font-family: var(--font-px) !important;
+            font-size: 20px !important;
+            letter-spacing: 2px;
+        }
+
+        /* endpoint badge (GET) */
+        .endpoint-badge {
+            background: var(--orange) !important;
+            color: var(--ink) !important;
+            border: 3px solid var(--ink) !important;
+            border-radius: 3px !important;
+            box-shadow: 3px 3px 0 var(--ink) !important;
+            font-family: var(--font-px) !important;
+            font-size: 18px !important;
+            letter-spacing: 2px;
+            transform: rotate(-2deg);
+        }
+
+        /* endpoint path label */
+        .premium-card code {
+            font-family: var(--font-d) !important;
+            font-size: clamp(18px,2.2vw,26px) !important;
+            color: var(--lime) !important;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+        }
+
+        /* ── INPUTS ── */
+        .glass-input {
+            background: var(--bone) !important;
+            border: 3px solid var(--ink) !important;
+            border-radius: 4px !important;
+            box-shadow: 3px 3px 0 var(--orange) !important;
+        }
+        .glass-input:focus-within {
+            box-shadow: 5px 5px 0 var(--lime) !important;
+        }
+        .glass-input input {
+            font-family: var(--font-mono) !important;
+            color: var(--ink) !important;
+            font-weight: 600 !important;
+        }
+        .glass-input input::placeholder { color: #777 !important; }
+        .glass-input .param-label {
+            font-family: var(--font-px) !important;
+            font-size: 19px !important;
+            color: var(--ink) !important;
+            font-weight: 700 !important;
+            letter-spacing: .5px;
+        }
+
+        /* ── RUN BUTTON ── */
+        .btn-primary {
+            font-family: var(--font-d) !important;
+            font-size: clamp(15px,1.5vw,19px) !important;
+            letter-spacing: .5px;
+            text-transform: uppercase !important;
+            border-radius: 4px !important;
+            border: 3px solid var(--ink) !important;
+            box-shadow: 5px 5px 0 var(--ink) !important;
+            transition: transform .18s var(--snap), box-shadow .18s var(--pop) !important;
+        }
+        .btn-primary:hover {
+            transform: translate(-3px,-3px) !important;
+            box-shadow: 8px 8px 0 var(--ink) !important;
+        }
+        .btn-primary:active {
+            transform: translate(2px,2px) !important;
+            box-shadow: 2px 2px 0 var(--ink) !important;
+        }
+
+        /* ── COPY URL BUTTON ── */
+        .btn-copy {
+            font-family: var(--font-px) !important;
+            font-size: 18px !important;
+            letter-spacing: 1.5px;
+            background: transparent !important;
+            border: 2px solid var(--lime) !important;
+            border-radius: 3px !important;
+            color: var(--lime) !important;
+            box-shadow: 3px 3px 0 var(--lime) !important;
+            transition: all .15s !important;
+        }
+        .btn-copy:hover {
+            background: var(--lime) !important;
+            color: var(--ink) !important;
+            transform: translate(-2px,-2px) !important;
+            box-shadow: 5px 5px 0 var(--lime) !important;
+        }
+        .btn-copy.copied { background: var(--lime) !important; color: var(--ink) !important; }
+
+        /* ── TERMINAL ── */
+        .api-terminal {
+            background: var(--terminal-bg) !important;
+            background-image:
+                linear-gradient(rgba(208,245,58,.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(208,245,58,.03) 1px, transparent 1px) !important;
+            background-size: 22px 22px !important;
+            border: 3px solid var(--lime) !important;
+            border-radius: 6px !important;
+            box-shadow: 5px 5px 0 var(--lime) !important;
+        }
+
+        /* prompt bar under dots */
+        .api-terminal .term-prompt-bar {
+            position: absolute;
+            top: 36px; left: 0; right: 0;
+            padding: 5px 14px;
+            background: rgba(0,0,0,.35);
+            border-bottom: 1px solid rgba(208,245,58,.1);
+            font-family: var(--font-px);
+            font-size: 16px;
+            letter-spacing: 1px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .tp-u { color: #67e8f9; }
+        .tp-s { color: #3a5068; }
+        .tp-h { color: var(--orange); }
+        .tp-p { color: rgba(208,245,58,.5); font-weight: 400; }
+
+        .api-terminal pre {
+            padding-top: 72px !important;
+            padding-left: 14px !important;
+            padding-right: 14px !important;
+            padding-bottom: 14px !important;
+            font-family: var(--font-px) !important;
+            font-size: 17px !important;
+            letter-spacing: .5px;
+            line-height: 1.7 !important;
+        }
+        .api-terminal pre.state-idle   { color: rgba(208,245,58,.4); }
+        .api-terminal pre.state-load   { color: var(--accent-amber); text-shadow: 0 0 8px rgba(254,188,46,.3); }
+        .api-terminal pre.state-ok     { color: var(--lime); text-shadow: 0 0 8px rgba(208,245,58,.2); }
+        .api-terminal pre.state-err    { color: #fca5a5; text-shadow: 0 0 8px rgba(252,165,165,.25); }
+
+        .term-cursor {
+            display: inline-block;
+            width: 9px; height: 16px;
+            background: var(--lime);
+            vertical-align: middle;
+            margin-left: 2px;
+            animation: tcblink 1s step-end infinite;
+        }
+        @keyframes tcblink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        /* copy result button */
+        .copy-result-btn {
+            background: var(--ink) !important;
+            border: 2px solid var(--lime) !important;
+            color: var(--lime) !important;
+            border-radius: 3px !important;
+            font-family: var(--font-px) !important;
+            font-size: 15px !important;
+            letter-spacing: 1px;
+            box-shadow: 2px 2px 0 var(--lime) !important;
+        }
+        .copy-result-btn:hover { background: var(--lime) !important; color: var(--ink) !important; }
+        .copy-result-btn.copied { background: var(--lime) !important; color: var(--ink) !important; }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--ink) !important;
+            border-top: 3px solid var(--orange) !important;
+        }
+        footer .text-sm { font-family: var(--font-px) !important; font-size: 18px !important; letter-spacing: 1px; }
+        footer .text-xs { font-family: var(--font-px) !important; font-size: 16px !important; letter-spacing: 1px; }
+
+        /* ── TOAST ── */
+        .toast {
+            background: var(--lime) !important;
+            color: var(--ink) !important;
+            border: 3px solid var(--ink) !important;
+            border-radius: 4px !important;
+            box-shadow: 5px 5px 0 var(--orange) !important;
+            font-family: var(--font-px) !important;
+            font-size: 18px !important;
+            letter-spacing: 1px;
+        }
+
+        /* scrollbar */
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--orange) !important; border-radius: 2px !important; }
+
+        /* main breathing room */
+        main { overflow-x: hidden; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="app-header sticky top-0 z-50 w-full">
+        <div class="max-w-6xl mx-auto px-5 md:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="logo-box w-[46px] h-[46px] flex items-center justify-center">
+                    <i data-lucide="zap" class="w-6 h-6 text-black" fill="black"></i>
+                </div>
+                <span class="display-font font-bold text-xl sm:text-2xl tracking-tight text-black">
+                    PutzGomerch <span class="text-fuchsia-500">Api</span>
+                </span>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex items-center gap-2 px-4 py-2 border-[2.5px] border-black rounded-xl bg-emerald-300" style="box-shadow:3px 3px 0 #0B0B0B;">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-700 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-800"></span>
+                    </span>
+                    <span class="text-[0.7rem] font-black text-emerald-900 uppercase tracking-widest">Live Server</span>
+                </div>
+                <div class="status-box w-[46px] h-[46px] flex items-center justify-center relative">
+                    <i data-lucide="server" class="w-5 h-5 text-black"></i>
+                    <span class="ping-dot absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full border-2"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-4 sm:p-6 md:p-10 pb-32">
+        <div class="space-y-6 sm:space-y-8">
+
+            <!-- Hero card -->
+            <div class="premium-card p-6 sm:p-8">
+                <h1 class="display-font font-bold text-2xl sm:text-3xl text-violet-600 mb-2">Api Explorer Premium</h1>
+                <p class="text-sm sm:text-base text-slate-600 max-w-2xl">Jalankan endpoint autentikasi OTP, verifikasi, refresh token, riwayat transaksi, dan QRIS langsung dari browser.</p>
+                <hr class="dashed-divider my-6">
+                <div class="flex flex-col items-center gap-2 text-center">
+                    <span class="status-pill">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i> Server Online
+                    </span>
+                    <p class="text-sm text-slate-500 mt-1">Siap menjalankan request API.</p>
+                </div>
+            </div>
+
+            <!-- /auth/otp -->
+            <div class="premium-card p-6 sm:p-8" data-endpoint="auth-otp">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4 flex-wrap">
+                        <span class="endpoint-badge bg-cyan-300 text-black">
+                            <i data-lucide="arrow-right-circle" class="w-4 h-4"></i> GET
+                        </span>
+                        <code class="text-lg font-bold text-black tracking-tight">/auth/otp</code>
+                    </div>
+                    <button onclick="copyEndpointWithParams('auth-otp', '/auth/otp', ['phone'])" class="btn-copy" id="copy-btn-auth-otp">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copy URL
+                    </button>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-6 items-stretch">
+                    <div class="w-full lg:w-1/2 space-y-4 flex flex-col">
+                        <div class="glass-input flex items-center px-5">
+                            <span class="param-label min-w-[60px]">phone=</span>
+                            <input type="text" id="param-auth-otp-phone" placeholder="628xxxxxxxx" class="w-full bg-transparent outline-none py-5 text-lg">
+                        </div>
+                        <button onclick="runApiTest('/auth/otp', {phone: getVal('param-auth-otp-phone')}, 'res-otp')" class="btn-primary mt-auto py-5" style="background:var(--lime);color:var(--ink);">
+                            <i data-lucide="play" class="w-5 h-5"></i> <span>Jalankan</span>
+                        </button>
+                    </div>
+                    <div class="w-full lg:w-1/2 min-h-[200px]">
+                        <div class="api-terminal relative h-full min-h-[200px]">
+                            <div class="dots absolute top-[14px] left-[16px] flex gap-[9px] z-10">
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#f43f5e;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#fbbf24;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#34d399;border:1.5px solid rgba(0,0,0,.4)"></span>
+                            </div>
+                            <div class="term-prompt-bar">
+                                <span class="tp-u">root</span><span class="tp-s">@</span><span class="tp-u">xenoffc</span><span class="tp-s">:</span><span class="tp-h">#</span>
+                                <span class="tp-p">/auth/otp</span>
+                            </div>
+                            <button class="copy-result-btn absolute top-[10px] right-[12px] z-10 flex items-center gap-1.5 px-3 py-1.5" onclick="copyResult('res-otp')">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <pre id="res-otp" class="p-5 sm:p-6 h-full overflow-auto custom-scrollbar state-idle">root@xenoffc# <span class="term-cursor"></span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- /auth/verify -->
+            <div class="premium-card p-6 sm:p-8" data-endpoint="auth-verify">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4 flex-wrap">
+                        <span class="endpoint-badge bg-cyan-300 text-black">
+                            <i data-lucide="arrow-right-circle" class="w-4 h-4"></i> GET
+                        </span>
+                        <code class="text-lg font-bold text-black tracking-tight">/auth/verify</code>
+                    </div>
+                    <button onclick="copyEndpointWithParams('auth-verify', '/auth/verify', ['otp', 'otp_token'])" class="btn-copy" id="copy-btn-auth-verify">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copy URL
+                    </button>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-6 items-stretch">
+                    <div class="w-full lg:w-1/2 space-y-4 flex flex-col">
+                        <div class="glass-input flex items-center px-5">
+                            <span class="param-label min-w-[46px]">otp=</span>
+                            <input type="text" id="param-auth-verify-otp" placeholder="1234" class="w-full bg-transparent outline-none py-5 text-lg">
+                        </div>
+                        <div class="glass-input flex items-center px-5">
+                            <span class="param-label min-w-[98px]">otp_token=</span>
+                            <input type="text" id="param-auth-verify-otp_token" placeholder="token_dari_request_otp" class="w-full bg-transparent outline-none py-5 text-lg">
+                        </div>
+                        <button onclick="runApiTest('/auth/verify', {otp: getVal('param-auth-verify-otp'), otp_token: getVal('param-auth-verify-otp_token')}, 'res-verify')" class="btn-primary mt-auto py-5" style="background:var(--orange);color:var(--ink);">
+                            <i data-lucide="play" class="w-5 h-5"></i> <span>Jalankan</span>
+                        </button>
+                    </div>
+                    <div class="w-full lg:w-1/2 min-h-[240px]">
+                        <div class="api-terminal relative h-full min-h-[240px]">
+                            <div class="dots absolute top-[14px] left-[16px] flex gap-[9px] z-10">
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#f43f5e;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#fbbf24;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#34d399;border:1.5px solid rgba(0,0,0,.4)"></span>
+                            </div>
+                            <div class="term-prompt-bar">
+                                <span class="tp-u">root</span><span class="tp-s">@</span><span class="tp-u">xenoffc</span><span class="tp-s">:</span><span class="tp-h">#</span>
+                                <span class="tp-p">/auth/verify</span>
+                            </div>
+                            <button class="copy-result-btn absolute top-[10px] right-[12px] z-10 flex items-center gap-1.5 px-3 py-1.5" onclick="copyResult('res-verify')">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <pre id="res-verify" class="p-5 sm:p-6 h-full overflow-auto custom-scrollbar state-idle">root@xenoffc# <span class="term-cursor"></span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- /api/history -->
+            <div class="premium-card p-6 sm:p-8" data-endpoint="api-history">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4 flex-wrap">
+                        <span class="endpoint-badge bg-cyan-300 text-black">
+                            <i data-lucide="arrow-right-circle" class="w-4 h-4"></i> GET
+                        </span>
+                        <code class="text-lg font-bold text-black tracking-tight">/api/history</code>
+                    </div>
+                    <button onclick="copyEndpointWithParams('api-history', '/api/history', ['token', 'start_time'])" class="btn-copy" id="copy-btn-api-history">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copy URL
+                    </button>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-6 items-stretch">
+                    <div class="w-full lg:w-1/2 space-y-4 flex flex-col">
+                        <div class="glass-input flex items-center px-5">
+                            <span class="param-label min-w-[58px]">token=</span>
+                            <input type="text" id="param-api-history-token" placeholder="access_token_anda" class="w-full bg-transparent outline-none py-5 text-lg">
+                        </div>
+                        <div class="glass-input flex items-center px-5">
+                            <span class="param-label min-w-[98px]">start_time=</span>
+                            <input type="text" id="param-api-history-start_time" placeholder="YYYY-MM-DD (opsional)" class="w-full bg-transparent outline-none py-5 text-lg">
+                        </div>
+                        <button onclick="runApiTest('/api/history', {token: getVal('param-api-history-token'), start_time: getVal('param-api-history-start_time')}, 'res-hist')" class="btn-primary mt-auto py-5" style="background:var(--accent-amber);color:var(--ink);">
+                            <i data-lucide="play" class="w-5 h-5"></i> <span>Jalankan</span>
+                        </button>
+                    </div>
+                    <div class="w-full lg:w-1/2 min-h-[240px]">
+                        <div class="api-terminal relative h-full min-h-[240px]">
+                            <div class="dots absolute top-[14px] left-[16px] flex gap-[9px] z-10">
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#f43f5e;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#fbbf24;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#34d399;border:1.5px solid rgba(0,0,0,.4)"></span>
+                            </div>
+                            <div class="term-prompt-bar">
+                                <span class="tp-u">root</span><span class="tp-s">@</span><span class="tp-u">xenoffc</span><span class="tp-s">:</span><span class="tp-h">#</span>
+                                <span class="tp-p">/api/history</span>
+                            </div>
+                            <button class="copy-result-btn absolute top-[10px] right-[12px] z-10 flex items-center gap-1.5 px-3 py-1.5" onclick="copyResult('res-hist')">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <pre id="res-hist" class="p-5 sm:p-6 h-full overflow-auto custom-scrollbar state-idle">root@xenoffc# <span class="term-cursor"></span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- /api/qris/create -->
+            <div class="premium-card p-6 sm:p-8" data-endpoint="api-qris-create">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4 flex-wrap">
+                        <span class="endpoint-badge bg-cyan-300 text-black">
+                            <i data-lucide="arrow-right-circle" class="w-4 h-4"></i> GET
+                        </span>
+                        <code class="text-lg font-bold text-black tracking-tight">/api/qris/create</code>
+                    </div>
+                    <button onclick="copyEndpointWithParams('api-qris-create', '/api/qris/create', ['amount', 'static_qr'])" class="btn-copy" id="copy-btn-api-qris-create">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copy URL
+                    </button>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-6 items-stretch">
+                    <div class="w-full lg:w-1/2 space-y-4 flex flex-col">
+                        <div class="glass-input flex items-center px-5">
+                            <span class="param-label min-w-[72px]">amount=</span>
+                            <input type="number" id="param-api-qris-create-amount" placeholder="50000" class="w-full bg-transparent outline-none py-5 text-lg">
+                        </div>
+                        <div class="glass-input flex items-center px-5">
+                            <span class="param-label min-w-[82px]">static_qr=</span>
+                            <input type="text" id="param-api-qris-create-static_qr" placeholder="000201010212..." class="w-full bg-transparent outline-none py-5 text-lg">
+                        </div>
+                        <button onclick="runApiTest('/api/qris/create', {amount: getVal('param-api-qris-create-amount'), static_qr: getVal('param-api-qris-create-static_qr')}, 'res-qr')" class="btn-primary mt-auto py-5" style="background:var(--lime);color:var(--ink);">
+                            <i data-lucide="play" class="w-5 h-5"></i> <span>Jalankan</span>
+                        </button>
+                    </div>
+                    <div class="w-full lg:w-1/2 min-h-[240px]">
+                        <div class="api-terminal relative h-full min-h-[240px]">
+                            <div class="dots absolute top-[14px] left-[16px] flex gap-[9px] z-10">
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#f43f5e;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#fbbf24;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#34d399;border:1.5px solid rgba(0,0,0,.4)"></span>
+                            </div>
+                            <div class="term-prompt-bar">
+                                <span class="tp-u">root</span><span class="tp-s">@</span><span class="tp-u">xenoffc</span><span class="tp-s">:</span><span class="tp-h">#</span>
+                                <span class="tp-p">/api/qris/create</span>
+                            </div>
+                            <button class="copy-result-btn absolute top-[10px] right-[12px] z-10 flex items-center gap-1.5 px-3 py-1.5" onclick="copyResult('res-qr')">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <pre id="res-qr" class="p-5 sm:p-6 h-full overflow-auto custom-scrollbar state-idle">root@xenoffc# <span class="term-cursor"></span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- /auth/refresh/token -->
+            <div class="premium-card p-6 sm:p-8" data-endpoint="auth-refresh">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4 flex-wrap">
+                        <span class="endpoint-badge bg-cyan-300 text-black">
+                            <i data-lucide="arrow-right-circle" class="w-4 h-4"></i> GET
+                        </span>
+                        <code class="text-lg font-bold text-black tracking-tight">/auth/refresh/token</code>
+                    </div>
+                    <button onclick="copyEndpointWithParams('auth-refresh', '/auth/refresh/token', ['refresh_token'])" class="btn-copy" id="copy-btn-auth-refresh">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copy URL
+                    </button>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-6 items-stretch">
+                    <div class="w-full lg:w-1/2 space-y-4 flex flex-col">
+                        <div class="glass-input flex items-center px-5">
+                            <span class="param-label min-w-[120px]">refresh_token=</span>
+                            <input type="text" id="param-auth-refresh-refresh_token" placeholder="refresh_token_anda" class="w-full bg-transparent outline-none py-5 text-lg">
+                        </div>
+                        <button onclick="runApiTest('/auth/refresh/token', {refresh_token: getVal('param-auth-refresh-refresh_token')}, 'res-refresh')" class="btn-primary mt-auto py-5" style="background:var(--accent-blue);color:var(--ink);">
+                            <i data-lucide="play" class="w-5 h-5"></i> <span>Jalankan</span>
+                        </button>
+                    </div>
+                    <div class="w-full lg:w-1/2 min-h-[200px]">
+                        <div class="api-terminal relative h-full min-h-[200px]">
+                            <div class="dots absolute top-[14px] left-[16px] flex gap-[9px] z-10">
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#f43f5e;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#fbbf24;border:1.5px solid rgba(0,0,0,.4)"></span>
+                                <span class="block w-[11px] h-[11px] rounded-full" style="background:#34d399;border:1.5px solid rgba(0,0,0,.4)"></span>
+                            </div>
+                            <div class="term-prompt-bar">
+                                <span class="tp-u">root</span><span class="tp-s">@</span><span class="tp-u">xenoffc</span><span class="tp-s">:</span><span class="tp-h">#</span>
+                                <span class="tp-p">/auth/refresh/token</span>
+                            </div>
+                            <button class="copy-result-btn absolute top-[10px] right-[12px] z-10 flex items-center gap-1.5 px-3 py-1.5" onclick="copyResult('res-refresh')">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <pre id="res-refresh" class="p-5 sm:p-6 h-full overflow-auto custom-scrollbar state-idle">root@xenoffc# <span class="term-cursor"></span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="w-full py-8 px-4 text-center">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-black text-sm font-semibold">
+                <i data-lucide="code-2" class="w-4 h-4 text-fuchsia-500"></i>
+                <span class="tracking-wide">2026 Development By <span class="font-black">PutzOfficial</span></span>
+            </div>
+            <div class="flex items-center gap-4 text-xs text-slate-700 font-semibold">
+                <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> Secure API</span>
+                <span class="flex items-center gap-1"><i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500"></i> High Performance</span>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast-container fixed bottom-7 left-7 z-[9999] pointer-events-none">
+        <div id="toast" class="toast flex items-center gap-3 opacity-0 pointer-events-auto" style="transform:translateY(24px) scale(.95);transition:all .3s cubic-bezier(.22,.61,.36,1)">
+            <span class="toast-icon">📋</span>
+            <span id="toast-msg">Copied!</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+
+        const BASE_URL = window.location.origin;
+
+        function getVal(id) {
+            const el = document.getElementById(id);
+            return el ? el.value.trim() : '';
+        }
+
+        // ── Terminal helper ──
+        function setTerm(id, html, state) {
+            const el = document.getElementById(id);
+            el.className = 'p-5 sm:p-6 h-full overflow-auto custom-scrollbar state-' + (state || 'idle');
+            el.innerHTML = html;
+            el.scrollTop = el.scrollHeight;
+        }
+
+        // ── Toast ──
+        let toastTimer;
+        function showToast(message, icon = '📋') {
+            const toast = document.getElementById('toast');
+            const msg   = document.getElementById('toast-msg');
+            const ico   = toast.querySelector('.toast-icon');
+            ico.textContent = icon;
+            msg.textContent = message;
+            toast.classList.add('show');
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0) scale(1)';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(24px) scale(.95)';
+            }, 2400);
+        }
+
+        // ── Copy URL ──
+        function copyEndpointWithParams(endpointKey, path, paramNames) {
+            const params = {};
+            let filledCount = 0;
+            paramNames.forEach(pName => {
+                const val = getVal('param-' + endpointKey + '-' + pName);
+                params[pName] = val;
+                if (val !== '') filledCount++;
+            });
+            const query   = new URLSearchParams(params).toString();
+            const fullUrl = query ? BASE_URL + path + '?' + query : BASE_URL + path;
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                const btn = document.getElementById('copy-btn-' + endpointKey);
+                if (btn) { btn.classList.add('copied'); setTimeout(() => btn.classList.remove('copied'), 1500); }
+                showToast('URL disalin' + (filledCount > 0 ? ' (+ ' + filledCount + ' param)' : ''), '📋');
+            });
+        }
+
+        // ── Copy result ──
+        function copyResult(preId) {
+            const pre = document.getElementById(preId);
+            if (!pre) return;
+            navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+                const btn = pre.closest('.api-terminal').querySelector('.copy-result-btn');
+                if (btn) { btn.classList.add('copied'); setTimeout(() => btn.classList.remove('copied'), 1500); }
+                showToast('Result disalin', '📋');
+            });
+        }
+
+        // ── Run API test ──
+        async function runApiTest(endpoint, params, resultElementId) {
+            const clean = Object.fromEntries(Object.entries(params).filter(([,v]) => v !== '' && v != null));
+            const q = new URLSearchParams(clean).toString();
+            const fullPath = q ? endpoint + '?' + q : endpoint;
+
+            setTerm(resultElementId,
+                'root@xenoffc# GET ' + fullPath + '\n\n> Connecting...\n> Sending request...',
+                'load'
+            );
+
+            try {
+                const t0  = Date.now();
+                const res = await fetch(q ? endpoint + '?' + q : endpoint);
+                const elapsed = Date.now() - t0;
+                const data = await res.json();
+                const ts = new Date().toLocaleString('id-ID', { hour12: false });
+                const ok = res.ok;
+                const out =
+                    'root@xenoffc# GET ' + fullPath + '\n\n' +
+                    '> [' + ts + ']\n' +
+                    '> HTTP/1.1 ' + res.status + ' ' + (ok ? 'OK' : 'ERROR') + '\n' +
+                    '> X-Response-Time: ' + elapsed + 'ms\n' +
+                    '> Content-Type: application/json\n\n' +
+                    JSON.stringify(data, null, 2) +
+                    '\n\nroot@xenoffc# <span class="term-cursor"></span>';
+                setTerm(resultElementId, out, ok ? 'ok' : 'err');
+            } catch (e) {
+                const ts = new Date().toLocaleString('id-ID', { hour12: false });
+                setTerm(resultElementId,
+                    'root@xenoffc# GET ' + fullPath + '\n\n' +
+                    '> [' + ts + ']\n' +
+                    '> FATAL: Network / CORS Error\n' +
+                    '> ' + e.message + '\n' +
+                    '> Pastikan backend berjalan dan CORS diizinkan.\n\n' +
+                    'root@xenoffc# <span class="term-cursor"></span>',
+                    'err'
+                );
+            }
+        }
+    </script>
+</body>
+</html>
