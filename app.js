@@ -15,42 +15,48 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // ================= FUNGSI UPLOAD =================
+
 async function toUrl(buffer) {
-  if (!Buffer.isBuffer(buffer)) {
-    throw new Error("Input harus buffer");
-  }
-
-  const form = new FormData();
-
-  form.append("file", buffer, {
-    filename: "putz.png",
-    contentType: "image/png"
-  });
-
-  const res = await fetch("https://app.putzoffc.biz.id/api.php", {
-    method: "POST",
-    body: form,
-    headers: form.getHeaders()
-  });
-
-  const json = await res.json();
-
-  if (!res.ok || !json.success) {
-    throw new Error(
-      json.message ||
-      json.error ||
-      "Upload PutzUpload gagal"
-    );
-  }
-
-  const imageUrl = json.file?.url;
-
-  if (!imageUrl) {
-    throw new Error("Direct image URL tidak ditemukan");
-  }
-
-  return imageUrl;
+    if (!Buffer.isBuffer(buffer)) {
+        throw new Error("Input harus Buffer");
     }
+
+    const form = new FormData();
+
+    form.append("reqtype", "fileupload");
+    form.append("fileToUpload", buffer, {
+        filename: "putz.png",
+        contentType: "image/png"
+    });
+
+    const res = await fetch(
+        "https://catbox.moe/user/api.php",
+        {
+            method: "POST",
+            body: form,
+            headers: form.getHeaders()
+        }
+    );
+
+    const result = (await res.text()).trim();
+
+    if (!res.ok) {
+        throw new Error(
+            `Upload Catbox gagal: HTTP ${res.status} ${result}`
+        );
+    }
+
+    if (
+        !/^https:\/\/files\.catbox\.moe\/[a-zA-Z0-9]+\.(png|jpg|jpeg|gif|webp)$/i.test(result)
+    ) {
+        throw new Error(
+            `URL Catbox tidak valid atau upload gagal: ${result}`
+        );
+    }
+
+    return result;
+}
+
 
 // ================= ROUTE HALAMAN =================
 app.get('/', (req, res) => {
