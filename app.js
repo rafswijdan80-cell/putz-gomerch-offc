@@ -14,50 +14,6 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// ================= FUNGSI UPLOAD =================
-
-async function toUrl(buffer) {
-    if (!Buffer.isBuffer(buffer)) {
-        throw new Error("Input harus Buffer");
-    }
-
-    const form = new FormData();
-
-    form.append("reqtype", "fileupload");
-    form.append("fileToUpload", buffer, {
-        filename: "putz.png",
-        contentType: "image/png"
-    });
-
-    const res = await fetch(
-        "https://catbox.moe/user/api.php",
-        {
-            method: "POST",
-            body: form,
-            headers: form.getHeaders()
-        }
-    );
-
-    const result = (await res.text()).trim();
-
-    if (!res.ok) {
-        throw new Error(
-            `Upload Catbox gagal: HTTP ${res.status} ${result}`
-        );
-    }
-
-    if (
-        !/^https:\/\/files\.catbox\.moe\/[a-zA-Z0-9]+\.(png|jpg|jpeg|gif|webp)$/i.test(result)
-    ) {
-        throw new Error(
-            `URL Catbox tidak valid atau upload gagal: ${result}`
-        );
-    }
-
-    return result;
-}
-
-
 // ================= ROUTE HALAMAN =================
 app.get('/', (req, res) => {
     res.render('index');
@@ -205,31 +161,48 @@ app.get('/api/payouts', async (req, res) => {
 });
 
 // QRIS Dinamis → menghasilkan gambar & upload ke hosting, kembalikan URL
+
 app.get('/api/qris/create', async (req, res) => {
     try {
         const { amount, static_qr } = req.query;
+
         if (!amount || !static_qr) {
-            return res.status(400).json({ success: false, error: 'Parameter amount dan static_qr wajib diisi' });
+            return res.status(400).json({
+                success: false,
+                error: 'Parameter amount dan static_qr wajib diisi'
+            });
         }
 
-        // Generate QR
-        const data = await sdk.createDynamicQRIS(amount, static_qr);
-        const qrBuffer = Buffer.isBuffer(data.qr_buffer)
-            ? data.qr_buffer
-            : Buffer.from(data.qr_buffer.data);
+        const data = await sdk.createDynamicQRIS(
+            amount,
+            static_qr
+        );
 
-        // Upload buffer ke image hosting
-        const imageUrl = await toUrl(qrBuffer);
+        if (!data.qr_string) {
+            throw new Error('QR string tidak ditemukan');
+        }
 
-        res.json({
+        const imageUrl = new URL(
+            'https://api.qrserver.com/v1/create-qr-code/'
+        );
+
+        imageUrl.searchParams.set('size', '300x300');
+        imageUrl.searchParams.set('data', data.qr_string);
+        imageUrl.searchParams.set('format', 'png');
+
+        return res.json({
             success: true,
-            image_url: imageUrl,
+            image_url: imageUrl.toString(),
             amount: data.amount,
             qr_string: data.qr_string,
             created_at: data.created_at
         });
+
     } catch (e) {
-        res.status(400).json({ success: false, error: e.response?.data || e.message });
+        return res.status(400).json({
+            success: false,
+            error: e.response?.data || e.message
+        });
     }
 });
 
